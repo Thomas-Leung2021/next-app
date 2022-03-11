@@ -3,6 +3,7 @@ import sqlite from 'sqlite';
 import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { secret } from '../../../api/secret';
+import cookie from 'cookie';
 
 async function compareAsync(password: string, passwordToCompare: string) {
   return new Promise((resolved, rejected) => {
@@ -30,7 +31,18 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
         const jwt = sign(claims, secret, {
           expiresIn: '1h',
         });
-        res.json({ authToken: jwt });
+        res.setHeader(
+          'Set-Cookie',
+          cookie.serialize('authToken', jwt, {
+            httpOnly: true, // only transmit over http
+            secure: process.env.NODE_ENV !== 'development', // only transmit over https
+            sameSite: 'strict',
+            maxAge: 3600,
+            path: '/', // we want everything in localhost:3000 to be able to access this cookie
+          })
+        );
+        // res.json({ authToken: jwt });
+        res.json({ message: 'Welcome back to the app!' });
       } else {
         res.json({ meesage: 'Something went wrong' });
       }

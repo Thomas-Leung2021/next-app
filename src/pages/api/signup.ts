@@ -14,7 +14,7 @@ async function hashAsync(password: string) {
   });
 }
 
-// Example: http://localhost:3000/api/login (POST)
+// Example: http://localhost:3000/api/signup (POST)
 // {
 //   "name": "test",
 //   "email": "test@gmail.com",

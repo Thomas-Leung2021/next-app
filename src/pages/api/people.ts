@@ -6,7 +6,7 @@ import { secret } from '../../../api/secret';
 // Should be extracted to a separate file
 export const authenticated =
   (fn: NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse) => {
-    verify(req.headers.authorization!, secret, async function (err, decoded) {
+    verify(req.cookies.authToken!, secret, async function (err, decoded) {
       if (!err && decoded) {
         return await fn(req, res);
       }
